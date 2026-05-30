@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Virtual env / secrets
+.venv/
+.env
+.env.*
+
+# Rendered chart output (PNGs the CLI agent writes). The prebuilt
+# data/cricket.duckdb IS committed so the project runs on clone.
+out/
+
+# Raw match JSON (large; not shipped — needed only to rebuild the DB)
+ipl_json/
+
+# macOS
+.DS_Store

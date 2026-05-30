@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IPL 2026 · Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <!-- atmosphere -->
+  <div class="bg">
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-a"></div>
+    <div class="bg-glow bg-glow-b"></div>
+    <div class="bg-grain"></div>
+    <div class="bg-vignette"></div>
+  </div>
+
+  <!-- top control bar -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">CRICKET<span>//</span>COMMAND</span>
+    </div>
+    <div class="top-meta" id="top-meta">IPL 2026 · 70 MATCHES · <span>LIVE</span></div>
+  </header>
+
+  <main class="wrap">
+    <!-- hero -->
+    <section class="hero" id="hero">
+      <div class="hero-mark" id="hero-mark">2026</div>
+      <div class="kicker"><span class="live"></span><span id="kicker-txt">SEASON 2026 · LIVE INTELLIGENCE</span></div>
+      <h1>IPL <em id="hero-year">2026</em><br/>COMMAND&nbsp;CENTER</h1>
+      <p class="lede">Ball-by-ball intelligence over seventy matches — every number computed
+        live on the rule-encoding views, plus an AI analyst that investigates any question on demand.</p>
+    </section>
+
+    <!-- filter deck -->
+    <section class="deck" id="deck">
+      <div class="deck-h">
+        <span class="lbl">Filters</span>
+        <button class="reset" id="reset" type="button">⟲ Reset all</button>
+      </div>
+      <div class="deck-grid">
+        <label class="field"><span>Season</span><select id="f-season"></select></label>
+        <label class="field"><span>Team</span><select id="f-team"></select></label>
+        <label class="field"><span>Opponent</span><select id="f-opponent"></select></label>
+        <label class="field"><span>Venue</span><select id="f-venue"></select></label>
+        <label class="field"><span>Innings</span><select id="f-innings">
+          <option value="All">All</option><option value="1">1st innings</option><option value="2">2nd innings</option>
+        </select></label>
+        <label class="field"><span>Phase</span><select id="f-phase">
+          <option value="All">All</option><option value="powerplay">Powerplay</option>
+          <option value="middle">Middle</option><option value="death">Death</option>
+        </select></label>
+        <label class="field"><span>Vs Bowling</span><select id="f-bowltype">
+          <option value="All">All</option><option value="pace">Pace</option><option value="spin">Spin</option>
+        </select></label>
+        <label class="field"><span>Batter Hand</span><select id="f-bathand">
+          <option value="All">All</option><option value="RHB">Right (RHB)</option><option value="LHB">Left (LHB)</option>
+        </select></label>
+        <label class="field field-range"><span>Qualifier · <b id="mb-val">30</b> balls</span>
+          <input id="f-minballs" type="range" min="6" max="120" step="6" value="30" /></label>
+      </div>
+      <div class="chips-active" id="chips-active"></div>
+    </section>
+
+    <!-- KPI ticker -->
+    <section class="ticker" id="ticker"></section>
+
+    <!-- segmented nav -->
+    <nav class="nav" id="nav">
+      <button class="nav-btn is-active" data-view="overview">Overview</button>
+      <button class="nav-btn" data-view="batting">Batting</button>
+      <button class="nav-btn" data-view="bowling">Bowling</button>
+      <button class="nav-btn" data-view="teams">Teams</button>
+      <button class="nav-btn" data-view="insights">Insights</button>
+      <button class="nav-btn" data-view="matchups">Matchups</button>
+      <button class="nav-btn nav-ask" data-view="ask">Ask the Analyst</button>
+      <span class="nav-ink" id="nav-ink"></span>
+    </nav>
+
+    <!-- views -->
+    <section class="view is-active" id="view-overview">
+      <div class="bento">
+        <div class="card span-5 tall" data-chart="run_scorers"><div class="card-h"><span class="lbl">Top Run Scorers</span><span class="meta">runs</span></div><div class="chart"></div></div>
+        <div class="card span-5 tall" data-chart="wicket_takers"><div class="card-h"><span class="lbl">Top Wicket-Takers</span><span class="meta">wickets</span></div><div class="chart"></div></div>
+        <div class="card span-2 tall" data-chart="runs_by_phase" data-type="donut"><div class="card-h"><span class="lbl">Runs / Phase</span></div><div class="chart"></div></div>
+        <div class="card span-7" data-chart="bat_vs_chase" data-type="duel"><div class="card-h"><span class="lbl">Bat First vs Chasing</span><span class="meta">matches won</span></div><div class="chart"></div></div>
+        <div class="card span-5" data-chart="econ_by_phase" data-type="vbar" data-color="amber"><div class="card-h"><span class="lbl">Economy by Phase</span><span class="meta">runs / over</span></div><div class="chart"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-batting">
+      <div class="bento">
+        <div class="card span-6 tall" data-chart="strike_rate"><div class="card-h"><span class="lbl">Strike Rate Leaders</span><span class="meta qual"></span></div><div class="chart"></div></div>
+        <div class="card span-6 tall" data-chart="sixes" data-color="pink"><div class="card-h"><span class="lbl">Most Sixes</span><span class="meta">sixes</span></div><div class="chart"></div></div>
+        <div class="card span-12" data-chart="average" data-color="cyan"><div class="card-h"><span class="lbl">Batting Average Leaders</span><span class="meta qual"></span></div><div class="chart"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-bowling">
+      <div class="bento">
+        <div class="card span-6 tall" data-chart="economy"><div class="card-h"><span class="lbl">Best Economy</span><span class="meta">lower is better · <span class="qual"></span></span></div><div class="chart"></div></div>
+        <div class="card span-6 tall" data-chart="dot_pct" data-color="cyan"><div class="card-h"><span class="lbl">Dot-Ball %</span><span class="meta qual"></span></div><div class="chart"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-teams">
+      <div class="bento">
+        <div class="card span-12" data-chart="team_wins"><div class="card-h"><span class="lbl">Matches Won</span><span class="meta">wins</span></div><div class="chart"></div></div>
+        <div class="card span-6" data-chart="team_runs" data-color="cyan"><div class="card-h"><span class="lbl">Runs Scored</span><span class="meta">runs</span></div><div class="chart"></div></div>
+        <div class="card span-6" data-chart="team_rr" data-color="pink"><div class="card-h"><span class="lbl">Run Rate</span><span class="meta">runs / over</span></div><div class="chart"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-insights">
+      <div class="bento">
+        <div class="card span-6 tall" id="ins-bowlers"><div class="card-h"><span class="lbl">Bowler Quadrant</span><span class="meta">economy → · wickets ↑</span></div><div class="chart"></div></div>
+        <div class="card span-6 tall" id="ins-batters"><div class="card-h"><span class="lbl">Batter Quadrant</span><span class="meta">average → · strike rate ↑</span></div><div class="chart"></div></div>
+        <div class="card span-12" id="ins-venues"><div class="card-h"><span class="lbl">Highest-Scoring Venues</span><span class="meta">avg 1st-innings score</span></div><div class="chart"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-matchups">
+      <div class="bento">
+        <div class="card span-12">
+          <div class="card-h"><span class="lbl">Batter vs Bowler</span><span class="meta">head-to-head · all-time unless a season is set</span></div>
+          <form class="mu-form" id="mu-form">
+            <input id="mu-batter" placeholder="Batter — e.g. Kohli" autocomplete="off" />
+            <span class="mu-vs">VS</span>
+            <input id="mu-bowler" placeholder="Bowler — e.g. Bumrah" autocomplete="off" />
+            <button type="submit">▸ Compare</button>
+          </form>
+          <div id="mu-result" class="mu-result"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-ask">
+      <div class="console">
+        <div class="console-h">
+          <span class="lbl">Ask the Analyst</span>
+          <span class="console-sub">investigates with live SQL &amp; charts · remembers your thread for follow-ups</span>
+          <button class="newchat" id="newchat" type="button">+ New chat</button>
+        </div>
+        <div class="transcript" id="transcript">
+          <div class="hint">
+            <p>Type a question and watch it work. Try:</p>
+            <div class="chips">
+              <button class="chip-q">analyze the best death-overs bowlers</button>
+              <button class="chip-q">who hits spin the best?</button>
+              <button class="chip-q">compare powerplay vs death run rates by team</button>
+            </div>
+          </div>
+        </div>
+        <div class="scope-row" id="scope-row" hidden></div>
+        <form class="ask-bar" id="ask-form">
+          <span class="caret">▸</span>
+          <input id="ask-input" autocomplete="off" placeholder="Ask anything about IPL 2026…" />
+          <button type="submit" id="ask-send">ANALYZE</button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="foot">
+      IPL 2026 · 70 matches · numbers computed live over rule-encoding DuckDB views ·
+      <span>LLM lives only at the edges</span>
+    </footer>
+  </main>
+
+  <!-- player drilldown overlay -->
+  <div class="pmodal" id="pmodal" hidden>
+    <div class="pmodal-bg" id="pmodal-bg"></div>
+    <div class="pmodal-card" id="pmodal-card"></div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
