@@ -80,7 +80,7 @@ function hbars(el, data, color = "lime", clickable = false) {
     return `<div class="hbar c-${color}">
       <span class="rk">${String(i + 1).padStart(2, "0")}</span>
       <span class="nm${clickable ? " pl" : ""}" data-player="${e}" title="${e}">${nm}</span>
-      <div class="track"><div class="fill" data-w="${Math.max(2, (d.value / max) * 100)}%"></div></div>
+      <div class="track"><div class="fill" style="width:${Math.max(2, (d.value / max) * 100)}%"></div></div>
       <span class="val">${d.value ?? "—"}</span>
     </div>`;
   }).join("")}</div>`;
@@ -92,7 +92,7 @@ function vbars(el, data, color = "lime") {
   const max = Math.max(...data.map((d) => d.value)) || 1;
   el.innerHTML = `<div class="vbars c-${color}">${data.map((d) => `
     <div class="vbar c-${color}">
-      <div class="col" data-h="${(d.value / max) * 100}%"><span class="vv">${d.value}</span></div>
+      <div class="col" style="height:${(d.value / max) * 100}%"><span class="vv">${d.value}</span></div>
       <span class="vl">${d.label ?? d.phase}</span>
     </div>`).join("")}</div>`;
 }
@@ -266,19 +266,22 @@ function renderDashboard() {
 // ───────────────────────── animation on reveal ─────────────────────────
 function animateView(view) {
   if (!view) return;
-  $$(".fill", view).forEach((f, i) => {
-    const w = f.dataset.w; f.style.width = "0";
-    setTimeout(() => requestAnimationFrame(() => (f.style.width = w)), 40 + i * 35);
-  });
-  $$(".col", view).forEach((c, i) => {
-    const h = c.dataset.h; c.style.height = "0";
-    setTimeout(() => requestAnimationFrame(() => (c.style.height = h)), 60 + i * 60);
-  });
+  // Bars already carry their real size inline; this only replays a grow flourish, so a
+  // bar is never left invisible if the reveal is skipped (e.g. backgrounded tab).
+  $$(".fill", view).forEach((f, i) => replay(f, `growX 1.05s cubic-bezier(.2,.7,.2,1) ${(0.04 + i * 0.035).toFixed(3)}s both`));
+  $$(".col", view).forEach((c, i) => replay(c, `growY 1s cubic-bezier(.2,.7,.2,1) ${(0.06 + i * 0.06).toFixed(3)}s both`));
   $$(".seg", view).forEach((s, i) => {
     const dash = s.getAttribute("stroke-dasharray").split(" ")[0];
     s.style.strokeDasharray = `0 9999`;
     setTimeout(() => { s.style.transition = "stroke-dasharray 1.1s cubic-bezier(.2,.7,.2,1)"; s.style.strokeDasharray = s.dataset.dash; }, 120 + i * 140);
   });
+}
+
+// Restart a CSS animation on an element it may have already played (e.g. on tab re-entry).
+function replay(el, animation) {
+  el.style.animation = "none";
+  void el.offsetWidth;          // force reflow so re-assigning the animation restarts it
+  el.style.animation = animation;
 }
 
 // ───────────────────────── nav ─────────────────────────

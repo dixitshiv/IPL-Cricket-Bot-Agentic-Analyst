@@ -20,3 +20,5 @@ ipl_json/
 
 # macOS
 .DS_Store
+
+tp.py

@@ -167,18 +167,21 @@ a{color:inherit;}
 .hbar .rk{font-family:var(--mono); font-size:.64rem; color:var(--mute2); text-align:right;}
 .hbar .nm{font-size:.8rem; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .hbar .track{height:26px; background:rgba(255,255,255,.045); border-radius:7px; overflow:hidden;}
-.hbar .fill{height:100%; width:0; border-radius:7px; transition:width 1.05s cubic-bezier(.2,.7,.2,1);
+.hbar .fill{height:100%; border-radius:7px; transform-origin:left center;
   background:linear-gradient(90deg,var(--lime-d),var(--lime)); box-shadow:0 0 18px -4px var(--lime);}
 .hbar.c-cyan .fill{background:linear-gradient(90deg,#0aa3bd,var(--cyan)); box-shadow:0 0 18px -4px var(--cyan);}
 .hbar.c-pink .fill{background:linear-gradient(90deg,#c01e68,var(--pink)); box-shadow:none;}
 .hbar.c-amber .fill{background:linear-gradient(90deg,#c8902b,var(--amber)); box-shadow:none;}
 .hbar .val{font-family:var(--mono); font-weight:600; font-size:.82rem; color:var(--ink); text-align:right;}
 
+/* Reveal flourish only — bars carry their real size inline, so they're visible even if this never plays. */
+@keyframes growX{from{transform:scaleX(0);} to{transform:scaleX(1);}}
+@keyframes growY{from{transform:scaleY(0);} to{transform:scaleY(1);}}
+
 /* ── vertical bars (phase / duel) ── */
 .vbars{display:flex; align-items:flex-end; gap:14px; height:200px; padding-top:8px;}
 .vbar{flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; height:100%; justify-content:flex-end;}
-.vbar .col{width:100%; max-width:84px; border-radius:9px 9px 0 0; height:0;
-  transition:height 1s cubic-bezier(.2,.7,.2,1);
+.vbar .col{width:100%; max-width:84px; border-radius:9px 9px 0 0; transform-origin:bottom center;
   background:linear-gradient(180deg,var(--lime),var(--lime-d)); position:relative;}
 .vbar.c-amber .col{background:linear-gradient(180deg,var(--amber),#c8902b);}
 .vbar.c-cyan .col{background:linear-gradient(180deg,var(--cyan),#0aa3bd);}

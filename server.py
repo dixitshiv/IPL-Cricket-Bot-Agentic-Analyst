@@ -255,7 +255,7 @@ def player(name: str, season: str = "2026"):
         "bowling": bowl,
         "is_bowler": int(bowl.get("balls") or 0) >= 30,
         "runs_by_season": rows(f"""SELECT season player, SUM(runs_batter) AS "value"
-            FROM v_deliveries WHERE batter_name='{nm}' GROUP BY 1 ORDER BY season"""),
+            FROM v_deliveries WHERE batter_name='{nm}' GROUP BY 1 ORDER BY season DESC"""),
         "sr_by_phase": rows(f"""SELECT phase player,
               ROUND(100.0*SUM(runs_batter)/NULLIF(COUNT(*) FILTER(WHERE is_legal_ball),0),1) AS "value"
             FROM v_deliveries WHERE batter_name='{nm}' {seas} GROUP BY 1"""),
@@ -268,10 +268,10 @@ def player(name: str, season: str = "2026"):
             GROUP BY 1 ORDER BY "value" DESC LIMIT 6"""),
         "econ_by_season": rows(f"""SELECT season player,
               ROUND(6.0*SUM(bowler_conceded)/NULLIF(COUNT(*) FILTER(WHERE is_legal_ball),0),2) AS "value"
-            FROM v_deliveries WHERE bowler_name='{nm}' GROUP BY 1 ORDER BY season"""),
+            FROM v_deliveries WHERE bowler_name='{nm}' GROUP BY 1 ORDER BY season DESC"""),
         "wkts_by_season": rows(f"""SELECT season player,
               COUNT(*) FILTER(WHERE wicket_kind IN {WICKET}) AS "value"
-            FROM v_deliveries WHERE bowler_name='{nm}' GROUP BY 1 ORDER BY season"""),
+            FROM v_deliveries WHERE bowler_name='{nm}' GROUP BY 1 ORDER BY season DESC"""),
     }
 
 
