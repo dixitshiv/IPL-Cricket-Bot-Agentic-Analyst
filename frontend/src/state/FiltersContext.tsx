@@ -47,22 +47,6 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [scopeOn, setScopeOn] = useState(false);
   const [activeView, setActiveView] = useState<string>(init.current.view || "overview");
 
-  // write non-default filters + non-overview view back to the hash
-  useEffect(() => {
-    const parts: string[] = [];
-    (Object.keys(DEFAULTS) as (keyof FilterState)[]).forEach((k) => {
-      if (state[k] !== DEFAULTS[k]) parts.push(`${k}=${encodeURIComponent(String(state[k]))}`);
-    });
-    if (activeView && activeView !== "overview") parts.push(`view=${activeView}`);
-    history.replaceState(null, "", parts.length ? "#" + parts.join("&") : location.pathname + location.search);
-  }, [state, activeView]);
-
-  const setFilter = (key: keyof FilterState, value: string | number) =>
-    setState((s) => ({ ...s, [key]: value }));
-  const reset = () => setState({ ...DEFAULTS });
-  const clearFilter = (key: keyof FilterState) =>
-    setState((s) => ({ ...s, [key]: key === "min_balls" ? DEFAULTS.min_balls : "All" }));
-
   const activeFilters = () => {
     const out: string[] = [];
     if (state.season !== "2026")
@@ -74,6 +58,27 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     }
     return out;
   };
+
+  // write non-default filters + non-overview view back to the hash
+  useEffect(() => {
+    const parts: string[] = [];
+    (Object.keys(DEFAULTS) as (keyof FilterState)[]).forEach((k) => {
+      if (state[k] !== DEFAULTS[k]) parts.push(`${k}=${encodeURIComponent(String(state[k]))}`);
+    });
+    if (activeView && activeView !== "overview") parts.push(`view=${activeView}`);
+    history.replaceState(null, "", parts.length ? "#" + parts.join("&") : location.pathname + location.search);
+  }, [state, activeView]);
+
+  // mirror the original: clearing all filters turns scope off
+  useEffect(() => {
+    if (scopeOn && activeFilters().length === 0) setScopeOn(false);
+  }, [state, scopeOn]);
+
+  const setFilter = (key: keyof FilterState, value: string | number) =>
+    setState((s) => ({ ...s, [key]: value }));
+  const reset = () => setState({ ...DEFAULTS });
+  const clearFilter = (key: keyof FilterState) =>
+    setState((s) => ({ ...s, [key]: key === "min_balls" ? DEFAULTS.min_balls : "All" }));
 
   const scopeParams = () => {
     const params: string[] = [];
