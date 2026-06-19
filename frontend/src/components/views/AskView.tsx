@@ -21,6 +21,8 @@ export default function AskView({ active, health, registerAsk }: {
   const { turns, streaming, ask, newChat } = useAnalystStream();
   const [input, setInput] = useState("");
   const transcriptRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const prevStreaming = useRef(false);
   const offline = health ? !health.has_key : false;
 
   const submit = (q: string) => {
@@ -30,6 +32,12 @@ export default function AskView({ active, health, registerAsk }: {
 
   // expose submit to the parent (KPI clicks switch to Ask and fire a question)
   useEffect(() => { registerAsk(submit); });
+
+  // refocus input after a turn completes (mirrors vanilla app's done-handler focus)
+  useEffect(() => {
+    if (prevStreaming.current && !streaming && active) inputRef.current?.focus();
+    prevStreaming.current = streaming;
+  }, [streaming, active]);
 
   // autoscroll
   useEffect(() => {
@@ -70,7 +78,7 @@ export default function AskView({ active, health, registerAsk }: {
         )}
         <form className="ask-bar" onSubmit={(e) => { e.preventDefault(); submit(input); setInput(""); }}>
           <span className="caret">▸</span>
-          <input autoComplete="off"
+          <input ref={inputRef} autoComplete="off"
             placeholder={offline ? "AI analyst offline — set OPENROUTER_API_KEY in .env" : "Ask anything about IPL 2026…"}
             value={input} onChange={(e) => setInput(e.target.value)} />
           <button type="submit" disabled={streaming}>ANALYZE</button>
